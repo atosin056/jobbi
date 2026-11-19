@@ -20,15 +20,20 @@ export class BotService {
     // Check for the presence of the user's first name and ID
     const firstName = ctx.from?.first_name;
     const userId = ctx.from?.id;
+    const chatId = ctx.chat?.id;
 
-    if (!firstName || !userId) {
+    if (!firstName || !userId || !chatId) {
       await ctx.reply("Unable to process your request.");
       return;
     }
 
     try {
         // Check if the user already exists in the database
-        const [rows]: User[] = await db.query('SELECT * FROM users WHERE user_id = ?', [userId]);
+        const [rows] = await db.query<User[]>('SELECT * FROM users WHERE chatId = ?', [chatId]);
+        if (rows.length > 0) {
+       
+            return;
+        }
 
     } catch (error) {
         console.error("Database error:", error);

@@ -1,7 +1,7 @@
 import { Bot } from "grammy";
 import type { Context } from "grammy";
-import { db } from '@db/db.js';
-import type User from '@types/index.js';
+import { db } from "./db/db.js";
+import type User from "./types/index.js";
 
 export class BotService {
   private bot: Bot;
@@ -42,7 +42,7 @@ Need anything else in the meantime? 🌚`);
   "INSERT INTO users (firstName, lastName, userId, chatId) VALUES (?, ?, ?, ?)",
   [firstName, lastName, userId, chatId]
 );
-            await ctx.reply(`Welcome, ${firstName}! 😎 I'm your personal job-hunting assistant. 🕵️‍♂️`);
+            await ctx.reply(`Hey ${firstName}! 👋 I'm your personal job-hunting buddy. I'll keep an eye out for opportunities that match what you're looking for. Let's get you hired! 🚀`);
         }
 
     } catch (error) {
@@ -51,6 +51,8 @@ Need anything else in the meantime? 🌚`);
     }
 
   }
+
+  private handle
 
 
   private commandHandler() {
@@ -70,7 +72,7 @@ Need anything else in the meantime? 🌚`);
       await ctx.replyWithChatAction("typing");
 
       // TODO: const reply = await runAgent(userId, text);
-      await ctx.reply(`You said: ${text}`);
+     await ctx.reply(`Oops! 😅 I don't recognise that. Try a valid command and let's keep things moving!`);
     } catch (err) {
       console.error(err);
       await ctx.reply("Something went wrong, try again.");

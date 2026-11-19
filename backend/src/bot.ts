@@ -21,6 +21,7 @@ export class BotService {
     const firstName = ctx.from?.first_name;
     const userId = ctx.from?.id;
     const chatId = ctx.chat?.id;
+    const lastName = ctx.from?.last_name || '';
 
     if (!firstName || !userId || !chatId) {
       await ctx.reply("Unable to process your request.");
@@ -31,8 +32,17 @@ export class BotService {
         // Check if the user already exists in the database
         const [rows] = await db.query<User[]>('SELECT * FROM users WHERE chatId = ?', [chatId]);
         if (rows.length > 0) {
-       
+            await ctx.reply(`Ah ${firstName}, you're back! 😏 I'm still out here hunting, and the moment I find something, you'll be the first to know. 😉
+
+Need anything else in the meantime? 🌚`);
             return;
+        }
+        else {
+            const [result] = await db.query(
+  "INSERT INTO users (firstName, lastName, userId, chatId) VALUES (?, ?, ?, ?)",
+  [firstName, lastName, userId, chatId]
+);
+            await ctx.reply(`Welcome, ${firstName}! 😎 I'm your personal job-hunting assistant. 🕵️‍♂️`);
         }
 
     } catch (error) {

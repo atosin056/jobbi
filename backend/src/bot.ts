@@ -1,5 +1,7 @@
 import { Bot } from "grammy";
 import type { Context } from "grammy";
+import { db } from '@db/db.js';
+import type User from '@types/index.js';
 
 export class BotService {
   private bot: Bot;
@@ -14,8 +16,30 @@ export class BotService {
     this.bot.catch((err) => console.error("Bot error:", err));
   }
 
+  private async handleStart(ctx: Context) {
+    // Check for the presence of the user's first name and ID
+    const firstName = ctx.from?.first_name;
+    const userId = ctx.from?.id;
+
+    if (!firstName || !userId) {
+      await ctx.reply("Unable to process your request.");
+      return;
+    }
+
+    try {
+        // Check if the user already exists in the database
+        const [rows]: User[] = await db.query('SELECT * FROM users WHERE user_id = ?', [userId]);
+
+    } catch (error) {
+        console.error("Database error:", error);
+        await ctx.reply("Something went wrong, try again.");
+    }
+
+  }
+
+
   private commandHandler() {
-    this.bot.command("start", (ctx) => ctx.reply("Jobbi is alive"));
+    this.bot.command("start", (ctx) => this.handleStart(ctx));
   }
 
   private messageHandler() {
